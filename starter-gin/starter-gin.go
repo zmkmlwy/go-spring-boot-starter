@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package SpringBootStarterGoRedis
+package GinStarter
 
 import (
-	"github.com/didi/go-spring/spring-core"
-	"github.com/didi/go-spring/spring-goredis"
-	"github.com/go-spring/go-spring-boot/spring-boot"
+	"github.com/didi/go-spring/spring-web"
+	"github.com/didi/go-spring/spring-gin"
 )
 
 func init() {
-	SpringBoot.RegisterModule(func(ctx SpringCore.SpringContext) {
-		ctx.RegisterBean(new(SpringGoRedis.GoRedisTemplate))
+	SpringWeb.RegisterWebContainer(func() SpringWeb.WebContainer {
+		return new(SpringGin.Container)
 	})
 }

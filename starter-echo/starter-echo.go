@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package SpringBootStarterHttp
+package EchoStarter
 
 import (
-	"github.com/didi/go-spring/spring-http"
-	"github.com/didi/go-spring/spring-core"
-	"github.com/go-spring/go-spring-boot/spring-boot"
-	"github.com/go-spring/go-spring-boot-starter/spring-boot-web"
+	"github.com/didi/go-spring/spring-echo"
+	"github.com/didi/go-spring/spring-web"
 )
 
 func init() {
-	SpringBoot.RegisterModule(func(ctx SpringCore.SpringContext) {
-		container := new(SpringHttp.HttpContainer)
-		ctx.RegisterBean(container)
-		ctx.RegisterBean(SpringBootWeb.Wrapper(container))
+	SpringWeb.RegisterWebContainer(func() SpringWeb.WebContainer {
+		return new(SpringEcho.Container)
 	})
 }

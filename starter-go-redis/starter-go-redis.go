@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package SpringBootStarterEcho
+package GoRedisStarter
 
 import (
 	"github.com/didi/go-spring/spring-core"
-	"github.com/didi/go-spring/spring-echo"
 	"github.com/go-spring/go-spring-boot/spring-boot"
-	"github.com/go-spring/go-spring-boot-starter/spring-boot-web"
+	"github.com/didi/go-spring/spring-go-redis"
 )
 
 func init() {
-	SpringBoot.RegisterModule(func(context SpringCore.SpringContext) {
-		container := SpringEcho.NewEchoContainer()
-		context.RegisterBean(container)
-		context.RegisterBean(SpringBootWeb.Wrapper(container))
+	SpringBoot.RegisterModule(func(ctx SpringCore.SpringContext) {
+		ctx.RegisterBean(new(SpringGoRedis.Client))
 	})
 }
