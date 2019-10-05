@@ -18,8 +18,8 @@ package GoRedisStarter
 
 import (
 	"github.com/didi/go-spring/spring-core"
-	"github.com/go-spring/go-spring-boot/spring-boot"
 	"github.com/didi/go-spring/spring-go-redis"
+	"github.com/go-spring/go-spring-boot/spring-boot"
 )
 
 func init() {

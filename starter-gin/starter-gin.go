@@ -23,6 +23,6 @@ import (
 
 func init() {
 	SpringWeb.RegisterWebContainer(func() SpringWeb.WebContainer {
-		return new(SpringGin.Container)
+		return SpringGin.NewContainer()
 	})
 }

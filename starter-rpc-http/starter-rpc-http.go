@@ -62,9 +62,7 @@ func (starter *RpcContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 	ssl bool, address string, certFile string, keyFile string) {
 
 	// 创建 RPC 容器对象
-	c := &SpringHttpRpc.Container{
-		WebContainer: SpringWeb.WebContainerFactory(),
-	}
+	c := SpringHttpRpc.NewContainer(SpringWeb.WebContainerFactory())
 
 	var beans []SpringRpc.RpcBeanInitialization
 	ctx.FindBeansByType(&beans)
