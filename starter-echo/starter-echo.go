@@ -17,8 +17,8 @@
 package EchoStarter
 
 import (
-	"github.com/didi/go-spring/spring-echo"
-	"github.com/didi/go-spring/spring-web"
+	"github.com/go-spring/go-spring/spring-echo"
+	"github.com/go-spring/go-spring/spring-web"
 )
 
 func init() {

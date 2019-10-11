@@ -17,8 +17,8 @@
 package GinStarter
 
 import (
-	"github.com/didi/go-spring/spring-web"
-	"github.com/didi/go-spring/spring-gin"
+	"github.com/go-spring/go-spring/spring-gin"
+	"github.com/go-spring/go-spring/spring-web"
 )
 
 func init() {

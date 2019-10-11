@@ -19,12 +19,12 @@ package HttpRpcStarter
 import (
 	"fmt"
 
-	"github.com/didi/go-spring/spring-core"
-	"github.com/didi/go-spring/spring-rpc"
-	"github.com/didi/go-spring/spring-utils"
-	"github.com/didi/go-spring/spring-web"
 	"github.com/go-spring/go-spring-boot/spring-boot"
-	"github.com/didi/go-spring/spring-rpc-http"
+	"github.com/go-spring/go-spring/spring-core"
+	"github.com/go-spring/go-spring/spring-rpc"
+	"github.com/go-spring/go-spring/spring-rpc-http"
+	"github.com/go-spring/go-spring/spring-utils"
+	"github.com/go-spring/go-spring/spring-web"
 )
 
 func init() {
