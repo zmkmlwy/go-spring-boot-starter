@@ -48,9 +48,9 @@ type WebContainerConfig struct {
 // Web 容器启动器
 //
 type WebContainerStarter struct {
-	Config       *WebContainerConfig `autowire:""`
-	Container    SpringWeb.WebContainer
-	SSLContainer SpringWeb.WebContainer
+	Config       *WebContainerConfig    `autowire:""`
+	Container    SpringWeb.WebContainer `autowire:"WebContainer"`
+	SSLContainer SpringWeb.WebContainer `autowire:"WebSSLContainer"`
 }
 
 //
@@ -59,8 +59,18 @@ type WebContainerStarter struct {
 func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationContext,
 	ssl bool, address string, certFile string, keyFile string) {
 
-	// 创建 Web 容器对象
-	c := SpringWeb.WebContainerFactory()
+	var c SpringWeb.WebContainer
+
+	if ssl {
+		c = starter.SSLContainer
+	} else {
+		c = starter.Container
+	}
+
+	if c == nil {
+		// 如果用户没有创建则使用默认的 Web 容器
+		c = SpringWeb.WebContainerFactory()
+	}
 
 	var beans []SpringWeb.WebBeanInitialization
 	ctx.FindBeansByType(&beans)
