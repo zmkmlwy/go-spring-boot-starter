@@ -77,7 +77,7 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 
 	// 初始化 Web Beans
 	for _, bean := range beans {
-		bean.InitWebBean(c)
+		bean.InitWebBean(c, ctx)
 	}
 
 	// 启动 Web 容器
