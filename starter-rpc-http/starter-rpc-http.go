@@ -19,7 +19,7 @@ package HttpRpcStarter
 import (
 	"fmt"
 
-	"github.com/go-spring/go-spring-boot/spring-boot"
+	"github.com/go-spring/go-spring/spring-boot"
 	"github.com/go-spring/go-spring/spring-core"
 	"github.com/go-spring/go-spring/spring-rpc"
 	"github.com/go-spring/go-spring/spring-rpc-http"
@@ -65,7 +65,7 @@ func (starter *RpcContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 	c := SpringHttpRpc.NewContainer(SpringWeb.WebContainerFactory())
 
 	var beans []SpringRpc.RpcBeanInitialization
-	ctx.FindBeansByType(&beans)
+	ctx.CollectBeans(&beans)
 
 	// 初始化 RPC Beans
 	for _, bean := range beans {

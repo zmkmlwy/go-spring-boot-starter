@@ -19,7 +19,7 @@ package WebStarter
 import (
 	"fmt"
 
-	"github.com/go-spring/go-spring-boot/spring-boot"
+	"github.com/go-spring/go-spring/spring-boot"
 	"github.com/go-spring/go-spring/spring-core"
 	"github.com/go-spring/go-spring/spring-utils"
 	"github.com/go-spring/go-spring/spring-web"
@@ -49,8 +49,8 @@ type WebContainerConfig struct {
 //
 type WebContainerStarter struct {
 	Config       *WebContainerConfig    `autowire:""`
-	Container    SpringWeb.WebContainer `autowire:"WebContainer"`
-	SSLContainer SpringWeb.WebContainer `autowire:"WebSSLContainer"`
+	Container    SpringWeb.WebContainer `autowire:"WebContainer?"`
+	SSLContainer SpringWeb.WebContainer `autowire:"WebSSLContainer?"`
 }
 
 //
@@ -73,7 +73,7 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 	}
 
 	var beans []SpringWeb.WebBeanInitialization
-	ctx.FindBeansByType(&beans)
+	ctx.CollectBeans(&beans)
 
 	// 初始化 Web Beans
 	for _, bean := range beans {

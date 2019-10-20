@@ -30,13 +30,8 @@ github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
 github.com/go-redis/redis v6.15.5+incompatible h1:pLky8I0rgiblWfa8C1EV7fPEUv0aH6vKRaYHc/YRHVk=
 github.com/go-redis/redis v6.15.5+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
-github.com/go-spring/app-starter v0.0.0-20190918142725-cf78aa07583e h1:2bCB5r9mGeEpKBuKxJLIw2/RVoVrFi6pOGI5xsW9KAY=
-github.com/go-spring/app-starter v0.0.0-20190918142725-cf78aa07583e/go.mod h1:Mx697YUINwiDa5iEzNsj/TSwILtYVSsxJxGI1ec7q8s=
-github.com/go-spring/go-spring v0.0.0-20191011115144-5a0c47248979/go.mod h1:Mu1iStMZcGwdlL5mcyZi44EdSQ7Of5Srhokmf/XDkSU=
-github.com/go-spring/go-spring v0.0.0-20191013093633-a37b6ea1fe19 h1:SO13t3ER+HDFBexKW8EweqNNrEzG7xV/seIX/tXpwuY=
-github.com/go-spring/go-spring v0.0.0-20191013093633-a37b6ea1fe19/go.mod h1:m8C2fJVvWOculqSXRLsJpmH4cDs98y0L5Kmg0Kxk134=
-github.com/go-spring/go-spring-boot v0.0.0-20191011115713-90688d3f41ae h1:NXgc1gzu/Ua61ATTjx9diBZyenV86z01hjEvCe9Vh1M=
-github.com/go-spring/go-spring-boot v0.0.0-20191011115713-90688d3f41ae/go.mod h1:IcVUUBYMkYjRt+O4mwMViMFYmkTYg7uLGrjdtgI8NuA=
+github.com/go-spring/go-spring v0.0.0-20191019151432-4f61c879bd65 h1:TcBGTap7TkP5t0xO1eQ2e49i3xsacyxQsaCjCs7pgAE=
+github.com/go-spring/go-spring v0.0.0-20191019151432-4f61c879bd65/go.mod h1:i00W8o/A4BzkTWXXXjApyoOSm9qIqktS0GepWOjNcWs=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
