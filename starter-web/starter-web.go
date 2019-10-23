@@ -19,10 +19,10 @@ package WebStarter
 import (
 	"fmt"
 
+	"github.com/go-spring/go-spring-parent/spring-utils"
+	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 	"github.com/go-spring/go-spring/spring-core"
-	"github.com/go-spring/go-spring/spring-utils"
-	"github.com/go-spring/go-spring/spring-web"
 )
 
 func init() {
@@ -30,6 +30,13 @@ func init() {
 		ctx.RegisterBean(new(WebContainerConfig))
 		ctx.RegisterBean(new(WebContainerStarter))
 	})
+}
+
+//
+// 定义 Web Bean 初始化接口
+//
+type WebBeanInitialization interface {
+	InitWebBean(c SpringWeb.WebContainer, ctx SpringCore.SpringContext)
 }
 
 //
@@ -72,7 +79,7 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 		c = SpringWeb.WebContainerFactory()
 	}
 
-	var beans []SpringWeb.WebBeanInitialization
+	var beans []WebBeanInitialization
 	ctx.CollectBeans(&beans)
 
 	// 初始化 Web Beans
