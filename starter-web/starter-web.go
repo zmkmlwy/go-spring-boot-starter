@@ -36,7 +36,30 @@ func init() {
 // 定义 Web Bean 初始化接口
 //
 type WebBeanInitialization interface {
-	InitWebBean(c SpringWeb.WebContainer, ctx SpringCore.SpringContext)
+	InitWebBean(c SpringWeb.WebContainer)
+}
+
+type WebContainerWrapper struct {
+	SpringWeb.WebContainer
+
+	ctx SpringCore.SpringContext
+}
+
+func NewWebContainerWrapper(c SpringWeb.WebContainer, ctx SpringCore.SpringContext) *WebContainerWrapper {
+	return &WebContainerWrapper{
+		WebContainer: c,
+		ctx:          ctx,
+	}
+}
+
+func (w *WebContainerWrapper) Filters(filterName ...string) []SpringWeb.Filter {
+	var result []SpringWeb.Filter
+	for _, s := range filterName {
+		var f SpringWeb.Filter
+		w.ctx.GetBeanByName(s, &f)
+		result = append(result, f)
+	}
+	return result
 }
 
 //
@@ -69,14 +92,19 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 	var c SpringWeb.WebContainer
 
 	if ssl {
-		c = starter.SSLContainer
+		if starter.SSLContainer == nil {
+			// 如果用户没有创建则使用默认的 Web 容器
+			c = NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
+		} else {
+			c = NewWebContainerWrapper(starter.SSLContainer, ctx)
+		}
 	} else {
-		c = starter.Container
-	}
-
-	if c == nil {
-		// 如果用户没有创建则使用默认的 Web 容器
-		c = SpringWeb.WebContainerFactory()
+		if starter.Container == nil {
+			// 如果用户没有创建则使用默认的 Web 容器
+			c = NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
+		} else {
+			c = NewWebContainerWrapper(starter.Container, ctx)
+		}
 	}
 
 	var beans []WebBeanInitialization
@@ -84,7 +112,7 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 
 	// 初始化 Web Beans
 	for _, bean := range beans {
-		bean.InitWebBean(c, ctx)
+		bean.InitWebBean(c)
 	}
 
 	// 启动 Web 容器
@@ -116,7 +144,7 @@ func (starter *WebContainerStarter) OnStartApplication(ctx SpringBoot.Applicatio
 	if starter.Config.EnableHTTPS {
 		address := fmt.Sprintf(":%d", starter.Config.SSLPort)
 		fmt.Printf("listen on %s%s\n", SpringUtils.LocalIPv4(), address)
-		starter.runContainer(ctx, false, address, starter.Config.SSLCert, starter.Config.SSLKey)
+		starter.runContainer(ctx, true, address, starter.Config.SSLCert, starter.Config.SSLKey)
 	}
 }
 
