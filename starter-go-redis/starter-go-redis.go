@@ -15,14 +15,3 @@
  */
 
 package GoRedisStarter
-
-import (
-	"github.com/go-spring/go-spring/spring-boot"
-	"github.com/go-spring/go-spring/spring-core"
-)
-
-func init() {
-	SpringBoot.RegisterModule(func(ctx SpringCore.SpringContext) {
-		//ctx.RegisterBean(new(SpringGoRedis.Client))
-	})
-}

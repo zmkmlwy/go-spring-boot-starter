@@ -26,10 +26,8 @@ import (
 )
 
 func init() {
-	SpringBoot.RegisterModule(func(ctx SpringCore.SpringContext) {
-		ctx.RegisterBean(new(WebContainerConfig))
-		ctx.RegisterBean(new(WebContainerStarter))
-	})
+	SpringBoot.RegisterBean(new(WebContainerConfig))
+	SpringBoot.RegisterBean(new(WebContainerStarter))
 }
 
 //
