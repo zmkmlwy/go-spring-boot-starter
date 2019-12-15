@@ -22,7 +22,7 @@ import (
 )
 
 func init() {
-	SpringWeb.RegisterWebContainer(func() SpringWeb.WebContainer {
+	SpringWeb.RegisterWebContainerFactory(func() SpringWeb.WebContainer {
 		return SpringGin.NewContainer()
 	})
 }

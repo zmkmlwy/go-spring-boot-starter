@@ -17,17 +17,16 @@
 package WebStarter
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/go-spring/go-spring-parent/spring-utils"
 	"github.com/go-spring/go-spring-web/spring-web"
 	"github.com/go-spring/go-spring/spring-boot"
 	"github.com/go-spring/go-spring/spring-core"
 )
 
 func init() {
-	SpringBoot.RegisterBean(new(WebContainerConfig))
-	SpringBoot.RegisterBean(new(WebContainerStarter))
+	SpringBoot.RegisterBean(new(WebServerConfig))
+	SpringBoot.RegisterBean(new(WebServerStarter))
 }
 
 //
@@ -61,13 +60,13 @@ func (w *WebContainerWrapper) Filters(filterName ...string) []SpringWeb.Filter {
 }
 
 //
-// Web 容器配置
+// Web 服务器配置
 //
-type WebContainerConfig struct {
+type WebServerConfig struct {
 	EnableHTTP  bool   `value:"${web.server.enable:=true}"`      // 是否启用 HTTP
-	Port        int32  `value:"${web.server.port:=8080}"`        // HTTP 端口
+	Port        int    `value:"${web.server.port:=8080}"`        // HTTP 端口
 	EnableHTTPS bool   `value:"${web.server.ssl.enable:=false}"` // 是否启用 HTTPS
-	SSLPort     int32  `value:"${web.server.ssl.port:=8443}"`    // SSL 端口
+	SSLPort     int    `value:"${web.server.ssl.port:=8443}"`    // SSL 端口
 	SSLCert     string `value:"${web.server.ssl.cert:=}"`        // SSL 证书
 	SSLKey      string `value:"${web.server.ssl.key:=}"`         // SSL 秘钥
 }
@@ -75,35 +74,13 @@ type WebContainerConfig struct {
 //
 // Web 容器启动器
 //
-type WebContainerStarter struct {
-	Config       *WebContainerConfig    `autowire:""`
-	Container    SpringWeb.WebContainer `autowire:"WebContainer?"`
-	SSLContainer SpringWeb.WebContainer `autowire:"WebSSLContainer?"`
+type WebServerStarter struct {
+	Config *WebServerConfig     `autowire:""`
+	Server *SpringWeb.WebServer `autowire:"?"`
 }
 
-//
-// 启动 Web 容器
-//
-func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationContext,
-	ssl bool, address string, certFile string, keyFile string) {
-
-	var c SpringWeb.WebContainer
-
-	if ssl {
-		if starter.SSLContainer == nil {
-			// 如果用户没有创建则使用默认的 Web 容器
-			c = NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
-		} else {
-			c = NewWebContainerWrapper(starter.SSLContainer, ctx)
-		}
-	} else {
-		if starter.Container == nil {
-			// 如果用户没有创建则使用默认的 Web 容器
-			c = NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
-		} else {
-			c = NewWebContainerWrapper(starter.Container, ctx)
-		}
-	}
+func (starter *WebServerStarter) initWebBeans(ctx SpringBoot.ApplicationContext,
+	c SpringWeb.WebContainer) {
 
 	var beans []WebBeanInitialization
 	ctx.CollectBeans(&beans)
@@ -112,49 +89,40 @@ func (starter *WebContainerStarter) runContainer(ctx SpringBoot.ApplicationConte
 	for _, bean := range beans {
 		bean.InitWebBean(c)
 	}
+}
 
-	// 启动 Web 容器
-	ctx.SafeGoroutine(func() {
+func (starter *WebServerStarter) OnStartApplication(ctx SpringBoot.ApplicationContext) {
 
-		var err error
-		if ssl {
-			starter.SSLContainer = c
-			err = c.StartTLS(address, certFile, keyFile)
-		} else {
-			starter.Container = c
-			err = c.Start(address)
+	if starter.Server == nil { // 用户没有定制 Web 服务器
+		starter.Server = SpringWeb.NewWebServer()
+
+		// 启动 HTTP 容器
+		if starter.Config.EnableHTTP {
+			c := NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
+			c.SetPort(starter.Config.Port)
+			starter.Server.AddWebContainer(c)
 		}
 
-		fmt.Println("exit web server goroutine", err)
-	})
+		// 启动 HTTPS 容器
+		if starter.Config.EnableHTTPS {
+			c := NewWebContainerWrapper(SpringWeb.WebContainerFactory(), ctx)
+			c.SetCertFile(starter.Config.SSLCert)
+			c.SetKeyFile(starter.Config.SSLKey)
+			c.SetPort(starter.Config.SSLPort)
+			starter.Server.AddWebContainer(c)
+		}
+	}
+
+	wrappers := make([]SpringWeb.WebContainer, 0)
+	for _, c := range starter.Server.Containers {
+		w := NewWebContainerWrapper(c, ctx)
+		starter.initWebBeans(ctx, w)
+		wrappers = append(wrappers, w)
+	}
+	starter.Server.Containers = wrappers
+	starter.Server.Start()
 }
 
-func (starter *WebContainerStarter) OnStartApplication(ctx SpringBoot.ApplicationContext) {
-
-	// 启动 HTTP 容器
-	if starter.Config.EnableHTTP {
-		address := fmt.Sprintf(":%d", starter.Config.Port)
-		fmt.Printf("listen on %s%s\n", SpringUtils.LocalIPv4(), address)
-		starter.runContainer(ctx, false, address, "", "")
-	}
-
-	// 启动 HTTPS 容器
-	if starter.Config.EnableHTTPS {
-		address := fmt.Sprintf(":%d", starter.Config.SSLPort)
-		fmt.Printf("listen on %s%s\n", SpringUtils.LocalIPv4(), address)
-		starter.runContainer(ctx, true, address, starter.Config.SSLCert, starter.Config.SSLKey)
-	}
-}
-
-func (starter *WebContainerStarter) OnStopApplication(ctx SpringBoot.ApplicationContext) {
-
-	// 停止 HTTP 容器
-	if starter.Container != nil {
-		starter.Container.Stop()
-	}
-
-	// 停止 HTTPS 容器
-	if starter.SSLContainer != nil {
-		starter.SSLContainer.Stop()
-	}
+func (starter *WebServerStarter) OnStopApplication(ctx SpringBoot.ApplicationContext) {
+	starter.Server.Stop(context.TODO())
 }
